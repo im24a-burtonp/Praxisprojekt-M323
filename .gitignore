@@ -4,3 +4,11 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .env
+
+# Lokale Lernnachweise und PDF-Abgaben
+lernportfolio/
+
+# Persönliche Word-Dokumentation
+*.doc
+*.docx
+*.docm
