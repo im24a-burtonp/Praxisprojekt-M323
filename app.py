@@ -3,6 +3,7 @@ import json
 
 from flask import Flask, render_template
 from psg_statistik import erstelle_statistik
+from torbilanz import Torbilanz, berechne_torbilanz
 
 app = Flask(__name__)
 DATA_FILE = Path(__file__).parent / "data" / "ligue1-2024-25.json"
@@ -50,6 +51,36 @@ def index():
         unentschieden=statistik.unentschieden,
         niederlagen=statistik.niederlagen,
     )
+
+@app.route("/tore")
+def torbilanz_deklarativ():
+    with DATA_FILE.open(encoding="utf-8") as file:
+        season = json.load(file)
+    psg_spiele = filter(ist_psg_spiel, season["matches"])
+    bilanz = berechne_torbilanz(psg_spiele)
+    return render_template("torbilanz.html", bilanz=bilanz)
+
+
+@app.route("/tore-imperativ")
+def torbilanz_imperativ():
+    with DATA_FILE.open(encoding="utf-8") as file:
+        season = json.load(file)
+    spiele = 0
+    tore = 0
+    gegentore = 0
+    for spiel in season["matches"]:
+        if not ist_psg_spiel(spiel):
+            continue
+        spiele += 1
+        if spiel["team1"] == "Paris Saint-Germain FC":
+            tore += spiel["score"]["ft"][0]
+            gegentore += spiel["score"]["ft"][1]
+        else:
+            tore += spiel["score"]["ft"][1]
+            gegentore += spiel["score"]["ft"][0]
+    bilanz = Torbilanz(spiele, tore, gegentore)
+    return render_template("torbilanz.html", bilanz=bilanz)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

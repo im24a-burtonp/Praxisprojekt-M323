@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PSG-Torbilanz - Saison 2024/25</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>PSG-Torbilanz 2024/25</h1>
+        <p>Ligaspiele: {{ bilanz.spiele }}</p>
+        <p>Erzielte Tore: {{ bilanz.tore }}</p>
+        <p>Gegentore: {{ bilanz.gegentore }}</p>
+        <p>Tordifferenz: {{ '%+d'|format(bilanz.tordifferenz) }}</p>
+        <p>Berücksichtigt werden nur die Ligue-1-Spiele der Saison 2024/25 aus der lokalen OpenFootball-Datei.</p>
+        <a href="{{ url_for('index') }}">Zurück zur PSG-Statistik</a>
+    </main>
+</body>
+</html>
