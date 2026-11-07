@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PSG-Spielsuche - Saison 2024/25</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>PSG-Spielsuche 2024/25</h1>
+        <form method="get" action="{{ url_for('spielsuche') }}">
+            <label for="ergebnis">Ergebnis aus PSG-Sicht</label>
+            <select id="ergebnis" name="ergebnis">
+                {% for wert, text in [('alle', 'Alle Ergebnisse'), ('sieg', 'Siege'), ('unentschieden', 'Unentschieden'), ('niederlage', 'Niederlagen')] %}
+                <option value="{{ wert }}" {% if ergebnis == wert %}selected{% endif %}>{{ text }}</option>
+                {% endfor %}
+            </select>
+            <label for="gegner">Gegner enthält</label>
+            <input id="gegner" name="gegner" value="{{ gegner }}" placeholder="z. B. Marseille">
+            <button type="submit">Suchen</button>
+            <a href="{{ url_for('spielsuche') }}">Zurücksetzen</a>
+        </form>
+        <p>Gefundene PSG-Spiele: {{ spiele|length }}</p>
+        <p>Tore insgesamt in diesen Spielen: {{ gesamt_tore }} (PSG und Gegner zusammen)</p>
+        <table>
+            <caption>Ausgewählte Ligue-1-Spiele der Saison 2024/25</caption>
+            <thead><tr><th scope="col">Datum</th><th scope="col">Heimteam</th><th scope="col">Ergebnis</th><th scope="col">Auswärtsteam</th></tr></thead>
+            <tbody>
+                {% for spiel in spiele %}
+                <tr><td>{{ spiel.date }}</td><td>{{ spiel.team1 }}</td><td>{{ spiel.score.ft[0] }} : {{ spiel.score.ft[1] }}</td><td>{{ spiel.team2 }}</td></tr>
+                {% else %}
+                <tr><td colspan="4">Keine Spiele für diese Auswahl gefunden.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><a href="{{ url_for('index') }}">Zurück zur PSG-Statistik</a></p>
+    </main>
+</body>
+</html>

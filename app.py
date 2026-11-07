@@ -1,9 +1,10 @@
 from pathlib import Path
 import json
 
-from flask import Flask, render_template
+from flask import Flask, abort, render_template, request
 from psg_statistik import erstelle_statistik
 from torbilanz import Torbilanz, berechne_torbilanz
+from spielsuche import ERGEBNIS_FILTER, suche_spiele
 
 app = Flask(__name__)
 DATA_FILE = Path(__file__).parent / "data" / "ligue1-2024-25.json"
@@ -80,6 +81,22 @@ def torbilanz_imperativ():
             gegentore += spiel["score"]["ft"][0]
     bilanz = Torbilanz(spiele, tore, gegentore)
     return render_template("torbilanz.html", bilanz=bilanz)
+
+
+@app.route("/spiele")
+def spielsuche():
+    ergebnis = request.args.get("ergebnis", "alle")
+    gegner = request.args.get("gegner", "").strip()
+    if ergebnis not in ERGEBNIS_FILTER:
+        abort(400, description="Unbekannter Ergebnisfilter.")
+    with DATA_FILE.open(encoding="utf-8") as file:
+        season = json.load(file)
+    psg_spiele = list(filter(ist_psg_spiel, season["matches"]))
+    treffer, gesamt_tore = suche_spiele(psg_spiele, ergebnis, gegner)
+    return render_template(
+        "spielsuche.html", spiele=treffer, gesamt_tore=gesamt_tore,
+        ergebnis=ergebnis, gegner=gegner,
+    )
 
 
 if __name__ == "__main__":
