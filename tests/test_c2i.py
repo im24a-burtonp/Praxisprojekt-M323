@@ -54,7 +54,7 @@ class C2ITests(unittest.TestCase):
 
     def test_route_excludes_other_teams_and_displays_both_groups(self):
         spiele = beispielspiele() + [{"team1": "Lyon", "team2": "Monaco", "score": {"ft": [9, 9]}}]
-        with patch('app.json.load', return_value={"matches": spiele}):
+        with patch('saisondaten.json.load', return_value={"matches": spiele}):
             response = app.test_client().get('/heim-auswaerts')
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)
@@ -68,7 +68,7 @@ class C2ITests(unittest.TestCase):
             self.assertIn(row, page)
 
     def test_route_handles_empty_away_group(self):
-        with patch('app.json.load', return_value={"matches": beispielspiele()[:1]}):
+        with patch('saisondaten.json.load', return_value={"matches": beispielspiele()[:1]}):
             response = app.test_client().get('/heim-auswaerts')
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)

@@ -70,7 +70,7 @@ class C2ATests(unittest.TestCase):
 
     def test_route_groups_psg_and_retains_selected_sort(self):
         spiele = beispielspiele() + [{"date": "2024-08-10", "team1": "Lyon", "team2": "Monaco", "score": {"ft": [9, 9]}}]
-        with patch('app.json.load', return_value={"matches": spiele}):
+        with patch('saisondaten.json.load', return_value={"matches": spiele}):
             response = app.test_client().get('/monate?sortierung=tore')
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)
@@ -82,7 +82,7 @@ class C2ATests(unittest.TestCase):
     def test_route_invalid_sorting_and_empty_state(self):
         client = app.test_client()
         self.assertEqual(client.get('/monate?sortierung=falsch').status_code, 400)
-        with patch('app.json.load', return_value={"matches": []}):
+        with patch('saisondaten.json.load', return_value={"matches": []}):
             response = client.get('/monate')
         self.assertEqual(response.status_code, 200)
         self.assertIn('Keine PSG-Spiele für die Monatsübersicht vorhanden.', response.get_data(as_text=True))

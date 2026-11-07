@@ -31,7 +31,7 @@ class B1ATests(unittest.TestCase):
         ]}
         before = copy.deepcopy(season)
         client = app.test_client()
-        with patch("app.json.load", return_value=season):
+        with patch("saisondaten.json.load", return_value=season):
             declarative = client.get("/tore")
             imperative = client.get("/tore-imperativ")
         self.assertEqual(declarative.status_code, 200)
@@ -44,7 +44,7 @@ class B1ATests(unittest.TestCase):
 
     def test_routes_with_no_psg_matches(self):
         client = app.test_client()
-        with patch("app.json.load", return_value={"matches": [spiel("Lyon", "Monaco", [4, 3])]}):
+        with patch("saisondaten.json.load", return_value={"matches": [spiel("Lyon", "Monaco", [4, 3])]}):
             declarative = client.get("/tore")
             imperative = client.get("/tore-imperativ")
         self.assertEqual(declarative.status_code, 200)

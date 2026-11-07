@@ -52,7 +52,7 @@ class C2BTests(unittest.TestCase):
         spiele = beispielspiele() + [
             {"date": "2024-08-25", "team1": "Lyon", "team2": "Monaco", "score": {"ft": [9, 9]}},
         ]
-        with patch('app.json.load', return_value={"matches": spiele}):
+        with patch('saisondaten.json.load', return_value={"matches": spiele}):
             response = app.test_client().get('/spiele?ergebnis=sieg&gegner=Monaco')
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)
@@ -63,7 +63,7 @@ class C2BTests(unittest.TestCase):
         self.assertNotIn('9 : 9', page)
 
     def test_route_empty_state(self):
-        with patch('app.json.load', return_value={"matches": beispielspiele()}):
+        with patch('saisondaten.json.load', return_value={"matches": beispielspiele()}):
             response = app.test_client().get('/spiele?gegner=NichtVorhanden')
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)

@@ -41,10 +41,19 @@ def berechne_monat(monat: str, psg_spiele) -> MonatsStatistik:
     )
 
 
+def indexiere_monate(psg_spiele) -> dict[str, MonatsStatistik]:
+    """Ordnet jedes Spiel einmal zu; Mutation betrifft nur das lokale Dictionary."""
+    index = {}
+    for spiel in psg_spiele:
+        monat = spiel["date"][:7]
+        bisher = index.get(monat, MonatsStatistik(monat, 0, 0, 0, 0))
+        index[monat] = erweitere_monat(bisher, spiel)
+    return index
+
+
 def aggregiere_monate(psg_spiele) -> tuple[MonatsStatistik, ...]:
-    spiele = tuple(psg_spiele)
-    monate = sorted({spiel["date"][:7] for spiel in spiele})
-    return tuple(map(lambda monat: berechne_monat(monat, spiele), monate))
+    index = indexiere_monate(psg_spiele)
+    return tuple(index[monat] for monat in sorted(index))
 
 
 def punkte_schluessel(statistik: MonatsStatistik) -> tuple:

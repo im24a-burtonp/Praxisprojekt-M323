@@ -16,7 +16,7 @@ class FunctionalDesignTests(unittest.TestCase):
             {"team1": "Lyon", "team2": "Monaco", "score": {"ft": [4, 3]}},
         ]}
         before = copy.deepcopy(season)
-        with patch("app.json.load", return_value=season), redirect_stdout(io.StringIO()):
+        with patch("saisondaten.json.load", return_value=season), redirect_stdout(io.StringIO()):
             response = app.test_client().get("/")
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)
@@ -28,7 +28,7 @@ class FunctionalDesignTests(unittest.TestCase):
         season = {"matches": [
             {"team1": "Lyon", "team2": "Monaco", "score": {"ft": [4, 3]}},
         ]}
-        with patch("app.json.load", return_value=season), redirect_stdout(io.StringIO()):
+        with patch("saisondaten.json.load", return_value=season), redirect_stdout(io.StringIO()):
             response = app.test_client().get("/")
         self.assertEqual(response.status_code, 200)
         page = response.get_data(as_text=True)
