@@ -1,5 +1,6 @@
 """Datenwert und pure Berechnung der PSG-Torbilanz."""
 from typing import NamedTuple
+from collections.abc import Iterable
 
 
 class Torbilanz(NamedTuple):
@@ -8,11 +9,11 @@ class Torbilanz(NamedTuple):
     gegentore: int
 
     @property
-    def tordifferenz(self):
+    def tordifferenz(self) -> int:
         return self.tore - self.gegentore
 
 
-def tore_aus_psg_sicht(spiel):
+def tore_aus_psg_sicht(spiel: dict) -> tuple[int, int]:
     """Gibt (PSG-Tore, Gegentore) für genau ein PSG-Spiel zurück."""
     heimtore, auswaertstore = spiel["score"]["ft"]
     if spiel["team1"] == "Paris Saint-Germain FC":
@@ -22,7 +23,7 @@ def tore_aus_psg_sicht(spiel):
     raise ValueError("Das Spiel muss ein PSG-Spiel sein.")
 
 
-def berechne_torbilanz(psg_spiele):
+def berechne_torbilanz(psg_spiele: Iterable[dict]) -> Torbilanz:
     """Transformiert bereits ausgewählte PSG-Spiele und summiert deren Tore."""
     torpaare = tuple(map(tore_aus_psg_sicht, psg_spiele))
     return Torbilanz(

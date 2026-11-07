@@ -9,7 +9,7 @@ app = Flask(__name__)
 DATA_FILE = Path(__file__).parent / "data" / "ligue1-2024-25.json"
 
 
-def ist_psg_spiel(spiel):
+def ist_psg_spiel(spiel: dict) -> bool:
     return (spiel["team1"] == "Paris Saint-Germain FC"
             or spiel["team2"] == "Paris Saint-Germain FC")
 
