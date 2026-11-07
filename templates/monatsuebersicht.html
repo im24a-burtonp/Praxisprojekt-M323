@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PSG-Monatsübersicht - Saison 2024/25</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>PSG-Monatsübersicht 2024/25</h1>
+        <form method="get" action="{{ url_for('monatsuebersicht') }}">
+            <label for="sortierung">Sortierung</label>
+            <select id="sortierung" name="sortierung">
+                {% for wert, text in [('monat', 'Zeitlich'), ('punkte', 'Meiste Punkte'), ('tore', 'Meiste Tore')] %}
+                <option value="{{ wert }}" {% if sortierung == wert %}selected{% endif %}>{{ text }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Anzeigen</button>
+        </form>
+        <p>Angezeigte Monate: {{ monate|length }}</p>
+        <table>
+            <caption>PSG-Ligaspiele nach Kalendermonat</caption>
+            <thead><tr><th scope="col">Monat</th><th scope="col">Spiele</th><th scope="col">Punkte</th><th scope="col">Tore</th><th scope="col">Gegentore</th><th scope="col">Tordifferenz</th><th scope="col">Punkte pro Spiel</th></tr></thead>
+            <tbody>
+                {% for monat in monate %}
+                <tr><th scope="row">{{ monat.monat }}</th><td>{{ monat.spiele }}</td><td>{{ monat.punkte }}</td><td>{{ monat.tore }}</td><td>{{ monat.gegentore }}</td><td>{{ '%+d'|format(monat.tordifferenz) }}</td><td>{{ '%.2f'|format(monat.punkte_pro_spiel) }}</td></tr>
+                {% else %}
+                <tr><td colspan="7">Keine PSG-Spiele für die Monatsübersicht vorhanden.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Es erscheinen nur Monate mit PSG-Ligaspielen. Die Anzahl Spiele kann je Monat unterschiedlich sein; Punkte pro Spiel erleichtern den Vergleich.</p>
+        <p>Bei „Meiste Punkte“ entscheidet danach die höhere Tordifferenz, dann der frühere Monat. Bei „Meiste Tore“ entscheiden danach weniger Gegentore, dann der frühere Monat.</p>
+        <a href="{{ url_for('index') }}">Zurück zur PSG-Statistik</a>
+    </main>
+</body>
+</html>

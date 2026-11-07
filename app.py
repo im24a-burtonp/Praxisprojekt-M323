@@ -6,6 +6,7 @@ from psg_statistik import erstelle_statistik
 from torbilanz import Torbilanz, berechne_torbilanz
 from spielsuche import ERGEBNIS_FILTER, suche_spiele
 from heim_auswaerts import berechne_vergleich, ist_heimspiel, ist_auswaertsspiel
+from monatsuebersicht import SORTIERUNGEN, erstelle_monatsuebersicht
 
 app = Flask(__name__)
 DATA_FILE = Path(__file__).parent / "data" / "ligue1-2024-25.json"
@@ -108,6 +109,18 @@ def heim_auswaerts_vergleich():
     heim = berechne_vergleich(psg_spiele, ist_heimspiel)
     auswaerts = berechne_vergleich(psg_spiele, ist_auswaertsspiel)
     return render_template("heim_auswaerts.html", heim=heim, auswaerts=auswaerts)
+
+
+@app.route("/monate")
+def monatsuebersicht():
+    sortierung = request.args.get("sortierung", "monat")
+    if sortierung not in SORTIERUNGEN:
+        abort(400, description="Unbekannte Monatssortierung.")
+    with DATA_FILE.open(encoding="utf-8") as file:
+        season = json.load(file)
+    psg_spiele = filter(ist_psg_spiel, season["matches"])
+    monate = erstelle_monatsuebersicht(psg_spiele, sortierung)
+    return render_template("monatsuebersicht.html", monate=monate, sortierung=sortierung)
 
 
 if __name__ == "__main__":
