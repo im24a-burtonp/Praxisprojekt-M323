@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PSG-Heim-/Auswärtsvergleich - Saison 2024/25</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>PSG-Heim-/Auswärtsvergleich 2024/25</h1>
+        <table>
+            <caption>PSG-Leistung in den Ligue-1-Spielen dieser Saison</caption>
+            <thead><tr><th scope="col">Kennzahl</th><th scope="col">Heimspiele</th><th scope="col">Auswärtsspiele</th></tr></thead>
+            <tbody>
+                <tr><th scope="row">Spiele</th><td>{{ heim.spiele }}</td><td>{{ auswaerts.spiele }}</td></tr>
+                <tr><th scope="row">Punkte</th><td>{{ heim.punkte }}</td><td>{{ auswaerts.punkte }}</td></tr>
+                <tr><th scope="row">Erzielte Tore</th><td>{{ heim.tore }}</td><td>{{ auswaerts.tore }}</td></tr>
+                <tr><th scope="row">Gegentore</th><td>{{ heim.gegentore }}</td><td>{{ auswaerts.gegentore }}</td></tr>
+                <tr><th scope="row">Punkte pro Spiel</th><td>{{ '%.2f'|format(heim.punkte_pro_spiel) }}</td><td>{{ '%.2f'|format(auswaerts.punkte_pro_spiel) }}</td></tr>
+            </tbody>
+        </table>
+        <p>Ein Sieg zählt 3 Punkte, ein Unentschieden 1 Punkt und eine Niederlage 0 Punkte. Die Werte werden aus den Resultaten berechnet.</p>
+        <p>Der Punkteschnitt ist auf zwei Dezimalstellen gerundet. Bei einer leeren Gruppe wird 0.00 angezeigt.</p>
+        <a href="{{ url_for('index') }}">Zurück zur PSG-Statistik</a>
+    </main>
+</body>
+</html>

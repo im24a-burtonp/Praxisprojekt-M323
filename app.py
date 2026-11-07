@@ -5,6 +5,7 @@ from flask import Flask, abort, render_template, request
 from psg_statistik import erstelle_statistik
 from torbilanz import Torbilanz, berechne_torbilanz
 from spielsuche import ERGEBNIS_FILTER, suche_spiele
+from heim_auswaerts import berechne_vergleich, ist_heimspiel, ist_auswaertsspiel
 
 app = Flask(__name__)
 DATA_FILE = Path(__file__).parent / "data" / "ligue1-2024-25.json"
@@ -97,6 +98,16 @@ def spielsuche():
         "spielsuche.html", spiele=treffer, gesamt_tore=gesamt_tore,
         ergebnis=ergebnis, gegner=gegner,
     )
+
+
+@app.route("/heim-auswaerts")
+def heim_auswaerts_vergleich():
+    with DATA_FILE.open(encoding="utf-8") as file:
+        season = json.load(file)
+    psg_spiele = list(filter(ist_psg_spiel, season["matches"]))
+    heim = berechne_vergleich(psg_spiele, ist_heimspiel)
+    auswaerts = berechne_vergleich(psg_spiele, ist_auswaertsspiel)
+    return render_template("heim_auswaerts.html", heim=heim, auswaerts=auswaerts)
 
 
 if __name__ == "__main__":
